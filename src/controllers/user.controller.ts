@@ -32,6 +32,26 @@ class UserController {
       next(e);
     }
   }
+
+  public async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = Number(req.params.userId);
+      const dto: Partial<IUser> = req.body;
+      const updatedUser = await userService.update(id, dto);
+      res.json(updatedUser);
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = Number(req.params.userId);
+      await userService.delete(id);
+      res.sendStatus(204);
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 export const userController = new UserController();

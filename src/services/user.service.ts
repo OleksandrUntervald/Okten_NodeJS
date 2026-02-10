@@ -29,6 +29,23 @@ class UserService {
     }
     return user;
   }
+  public async update(userId: number, dto: Partial<IUser>): Promise<IUser> {
+    if (dto.name && dto.name.length < 3)
+      throw new ApiErrors("Name must be at least 3 chars", 400);
+    if (dto.email && !dto.email.includes("@"))
+      throw new ApiErrors("Invalid email", 400);
+    if (dto.password && dto.password.length < 6)
+      throw new ApiErrors("Password too short", 400);
+
+    const updated = await userRepository.update(userId, dto);
+    if (!updated) throw new ApiErrors("User not found", 404);
+    return updated;
+  }
+
+  public async delete(userId: number): Promise<void> {
+    const deleted = await userRepository.delete(userId);
+    if (!deleted) throw new ApiErrors("User not found", 404);
+  }
 }
 
 export const userService = new UserService();

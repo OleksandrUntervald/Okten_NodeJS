@@ -23,6 +23,25 @@ class UserRepository {
     const users = await read();
     return users.find((user) => user.id === userId);
   }
+  public async update(userId: number, dto: Partial<IUser>): Promise<IUser> {
+    const users = await read();
+    const index = users.findIndex((u) => u.id === userId);
+    if (index === -1) return null;
+
+    users[index] = { ...users[index], ...dto };
+    await write(users);
+    return users[index];
+  }
+
+  public async delete(userId: number): Promise<boolean> {
+    const users = await read();
+    const index = users.findIndex((u) => u.id === userId);
+    if (index === -1) return false;
+
+    users.splice(index, 1);
+    await write(users);
+    return true;
+  }
 }
 
 export const userRepository = new UserRepository();
