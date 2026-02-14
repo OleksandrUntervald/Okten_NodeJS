@@ -22,14 +22,14 @@ class UserService {
     }
     return await userRepository.create(dto);
   }
-  public async getById(userId: number): Promise<IUser> {
+  public async getById(userId: string): Promise<IUser> {
     const user = await userRepository.getById(userId);
     if (!user) {
       throw new ApiErrors("User not found", 404);
     }
     return user;
   }
-  public async update(userId: number, dto: Partial<IUser>): Promise<IUser> {
+  public async update(userId: string, dto: Partial<IUser>): Promise<IUser> {
     if (dto.name && dto.name.length < 3)
       throw new ApiErrors("Name must be at least 3 chars", 400);
     if (dto.email && !dto.email.includes("@"))
@@ -42,7 +42,7 @@ class UserService {
     return updated;
   }
 
-  public async delete(userId: number): Promise<void> {
+  public async delete(userId: string): Promise<void> {
     const deleted = await userRepository.delete(userId);
     if (!deleted) throw new ApiErrors("User not found", 404);
   }

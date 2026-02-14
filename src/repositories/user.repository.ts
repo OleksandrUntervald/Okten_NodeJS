@@ -1,46 +1,23 @@
 import { IUser } from "../interfaces/user.interface";
-import { read, write } from "../services/fs.services";
+import { User } from "../models/user.models";
 
 class UserRepository {
   public async getList(): Promise<IUser[]> {
-    return await read();
+    return await User.find({});
   }
   public async create(dto: Partial<IUser>): Promise<IUser> {
-    const users = await read();
-
-    const newUser = {
-      id: users.length > 0 ? users[users.length - 1].id + 1 : 1,
-      name: dto.name,
-      email: dto.email,
-      password: dto.password,
-    };
-    users.push(newUser);
-    await write(users);
-
-    return newUser;
+    return await User.create(dto);
   }
-  public async getById(userId: number): Promise<IUser | null> {
-    const users = await read();
-    return users.find((user) => user.id === userId);
+  public async getById(userId: string): Promise<IUser | null> {
+    return await User.findById(userId);
   }
-  public async update(userId: number, dto: Partial<IUser>): Promise<IUser> {
-    const users = await read();
-    const index = users.findIndex((u) => u.id === userId);
-    if (index === -1) return null;
-
-    users[index] = { ...users[index], ...dto };
-    await write(users);
-    return users[index];
+  public async update(userId: string, dto: Partial<IUser>): Promise<IUser> {
+    return await User.findByIdAndUpdate(userId, dto, { new: true });
   }
 
-  public async delete(userId: number): Promise<boolean> {
-    const users = await read();
-    const index = users.findIndex((u) => u.id === userId);
-    if (index === -1) return false;
-
-    users.splice(index, 1);
-    await write(users);
-    return true;
+  public async delete(userId: string): Promise<boolean> {
+    const result = await User.deleteOne({ _id: userId });
+    return result.deletedCount === 1;
   }
 }
 
