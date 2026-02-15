@@ -5,11 +5,11 @@ import { IUser } from "../interfaces/user.interface";
 
 const userSchema = new Schema(
   {
-    name: { type: String, require: true },
-    age: { type: Number, require: true },
+    name: { type: String, required: true },
+    age: { type: Number, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true, selected: false },
-    phone: { type: String, require: true },
+    password: { type: String, required: true, selected: true },
+    phone: { type: String, required: true },
     role: { type: String, enum: RoleEnum, default: RoleEnum.USER },
     isVerified: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
