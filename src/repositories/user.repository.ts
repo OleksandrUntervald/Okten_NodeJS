@@ -1,23 +1,29 @@
 import { IUser } from "../interfaces/user.interface";
-import { User } from "../models/user.models";
+import { User } from "../models/user.model";
 
 class UserRepository {
   public async getList(): Promise<IUser[]> {
     return await User.find({});
   }
+
   public async create(dto: Partial<IUser>): Promise<IUser> {
     return await User.create(dto);
   }
+
   public async getById(userId: string): Promise<IUser | null> {
     return await User.findById(userId);
   }
-  public async update(userId: string, dto: Partial<IUser>): Promise<IUser> {
+
+  public async getByEmail(email: string): Promise<IUser | null> {
+    return await User.findOne({ email }).select("+password");
+  }
+
+  public async updateById(userId: string, dto: IUser): Promise<IUser> {
     return await User.findByIdAndUpdate(userId, dto, { new: true });
   }
 
-  public async delete(userId: string): Promise<boolean> {
-    const result = await User.deleteOne({ _id: userId });
-    return result.deletedCount === 1;
+  public async deleteById(userId: string): Promise<void> {
+    await User.deleteOne({ _id: userId });
   }
 }
 

@@ -1,10 +1,10 @@
 import express, { NextFunction, Request, Response } from "express";
-import mongoose from "mongoose";
+import * as mongoose from "mongoose";
 
 import { configs } from "./config/configs";
-import { ApiErrors } from "./errors/api-errors";
-import { userRouter } from "./routers/user.routes";
-// import { read, write } from "./services/fs.services";
+import { ApiError } from "./errors/api-error";
+import { authRouter } from "./routers/auth.router";
+import { userRouter } from "./routers/user.router";
 
 const app = express();
 
@@ -16,14 +16,14 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+app.use("/auth", authRouter);
 app.use("/users", userRouter);
+// app.use("/cars", carRouter);
 
 app.use(
   "*",
-  (error: ApiErrors, eq: Request, res: Response, next: NextFunction) => {
-    res.status(error.status || 500).send({
-      message: error.messege,
-    });
+  (error: ApiError, req: Request, res: Response, next: NextFunction) => {
+    res.status(error.status || 500).send(error.message);
   },
 );
 
@@ -35,6 +35,6 @@ process.on("uncaughtException", (error) => {
 app.listen(configs.APP_PORT, async () => {
   await mongoose.connect(configs.MONGO_URI);
   console.log(
-    `Server is good on http://${configs.APP_HOST}:${configs.APP_PORT}`,
+    `Server is running on http://${configs.APP_HOST}:${configs.APP_PORT}`,
   );
 });
