@@ -35,7 +35,6 @@ class AuthController {
       next(e);
     }
   }
-
 }
 
 export const authController = new AuthController();

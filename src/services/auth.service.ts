@@ -1,9 +1,11 @@
+import { EmailTypeEnum } from "../enums/email-type.enum";
 import { TokenTypeEnum } from "../enums/token-type.enum";
 import { ApiError } from "../errors/api-error";
 import { ITokenPair } from "../interfaces/token.interface";
 import { ISignIn, IUser } from "../interfaces/user.interface";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
+import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
 import { tokenService } from "./token.service";
 
@@ -19,7 +21,12 @@ class AuthService {
       userId: user._id,
       role: user.role,
     });
-    await tokenRepository.create({ ...tokens, _userId: user._id });
+    await emailService.sendMail(
+      EmailTypeEnum.WELCOME,
+      "untervaldthebest@gmail.com",
+      { name: user.name },
+    );
+
     return { user, tokens };
   }
 

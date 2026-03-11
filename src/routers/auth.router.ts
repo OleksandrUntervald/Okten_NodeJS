@@ -19,5 +19,4 @@ router.post(
 
 router.post("/refresh", authController.refresh);
 
-
 export const authRouter = router;
